@@ -6,7 +6,7 @@
 require_once __DIR__ . '/../includes/session.php';
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
@@ -20,15 +20,17 @@ $rememberMe = !empty($_POST['remember_me']);
 if (empty($email) || empty($password)) {
     $_SESSION['login_error']   = 'Email and password are required.';
     $_SESSION['prefill_email'] = $email;
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
 // ── Prepared statement lookup ────────────────────────────────
 $pdo  = getDB();
 $stmt = $pdo->prepare(
-    'SELECT user_id, name, email, password_hash, confirm_status
-       FROM users WHERE email = ? LIMIT 1'
+    'SELECT u.user_id, u.name, u.email, u.password_hash, u.confirm_status, u.role_id, u.is_active, r.role_name
+       FROM users u
+       JOIN roles r ON r.role_id = u.role_id
+      WHERE u.email = ? LIMIT 1'
 );
 $stmt->execute([$email]);
 $user = $stmt->fetch();
@@ -36,22 +38,31 @@ $user = $stmt->fetch();
 if (!$user || !password_verify($password, $user['password_hash'])) {
     $_SESSION['login_error']   = 'Invalid email or password.';
     $_SESSION['prefill_email'] = $email;
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
 if (!$user['confirm_status']) {
     $_SESSION['login_error']   = 'Please verify your email before logging in.';
     $_SESSION['prefill_email'] = $email;
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
+    exit;
+}
+
+if (!$user['is_active']) {
+    $_SESSION['login_error']   = 'Your account has been deactivated. Contact admin.';
+    $_SESSION['prefill_email'] = $email;
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
 // ── Create session ───────────────────────────────────────────
 session_regenerate_id(true);
-$_SESSION['user']  = $user['user_id'];
-$_SESSION['name']  = $user['name'];
-$_SESSION['email'] = $user['email'];
+$_SESSION['user']     = $user['user_id'];
+$_SESSION['name']     = $user['name'];
+$_SESSION['email']    = $user['email'];
+$_SESSION['role_id']  = $user['role_id'];
+$_SESSION['role']     = $user['role_name'];
 
 // ── Remember Me ──────────────────────────────────────────────
 if ($rememberMe) {
@@ -77,5 +88,7 @@ if ($rememberMe) {
     );
 }
 
-header('Location: ' . APP_URL . '/product/products.php');
+// Redirect based on role
+$redirectUrl = ($user['role_id'] == 2) ? APP_URL . '/admin/index.php' : APP_URL . '/product/products.php';
+header('Location: ' . $redirectUrl);
 exit;

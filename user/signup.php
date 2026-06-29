@@ -7,7 +7,7 @@ require_once __DIR__ . '/../includes/session.php';
 
 // Only accept POST
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
@@ -50,7 +50,7 @@ if (!empty($errors)) {
     $_SESSION['signup_error']        = implode(' ', $errors);
     $_SESSION['prefill_name']        = $name;
     $_SESSION['prefill_signup_email'] = $email;
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
@@ -62,7 +62,7 @@ $stmt->execute([$email]);
 if ($stmt->fetch()) {
     $_SESSION['signup_error']        = 'This email is already registered. Please login.';
     $_SESSION['prefill_signup_email'] = $email;
-    header('Location: ' . APP_URL . '/index.php');
+    header('Location: ' . APP_URL . '/user/auth.php');
     exit;
 }
 
@@ -71,8 +71,8 @@ $userId       = 'USR-' . strtoupper(bin2hex(random_bytes(8)));
 $passwordHash = password_hash($password, PASSWORD_BCRYPT);
 
 $stmt = $pdo->prepare(
-    'INSERT INTO users (user_id, name, email, password_hash, gender, confirm_status)
-     VALUES (?, ?, ?, ?, ?, 0)'
+    'INSERT INTO users (user_id, name, email, password_hash, gender, role_id, confirm_status)
+     VALUES (?, ?, ?, ?, ?, 1, 0)'
 );
 $stmt->execute([$userId, $name, $email, $passwordHash, $gender]);
 

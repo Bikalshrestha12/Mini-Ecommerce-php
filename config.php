@@ -9,7 +9,8 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 
 define('APP_NAME',    'Mini-Ecommerce');
-define('APP_URL',     'http://localhost/Mini-Ecommerce');
+define('APP_URL',     'http://localhost/shop');
+define('APP_VERSION', '2.0.0');
 define('COOKIE_NAME', 'remember_token');
 define('COOKIE_DAYS', 30);
 
