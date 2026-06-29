@@ -57,7 +57,7 @@ function isActive(string $file, string $dir = ''): string {
             background: rgba(255,255,255,0.15); transition: 0.2s ease;
         }
         .top-bar .social-links a:hover { background: rgba(255,255,255,0.3); text-decoration: none; }
-        .navbar { background: #fff !important; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 0.6rem 0 !important; }
+        .navbar { background: #fff !important; box-shadow: 0 1px 3px rgba(0,0,0,0.1); padding: 0.6rem 0 !important; position: relative; }
         .navbar-brand { font-weight: 700; font-size: 1.3rem; color: var(--primary-500) !important; display: flex; align-items: center; gap: 0.5rem; }
         .navbar-brand i { font-size: 1.5rem; }
         .navbar-nav .nav-link {
@@ -108,6 +108,51 @@ function isActive(string $file, string $dir = ''): string {
         @media (max-width: 991.98px) {
             .navbar-nav .nav-link { padding: 0.5rem 0.75rem !important; }
             .top-bar .contact-info { display: none; }
+            .navbar-collapse {
+                background: #f8f9fa;
+                border-top: 1px solid var(--border-color);
+                margin-top: 0.5rem;
+                padding: 0 !important;
+                height: 0;
+                overflow: hidden;
+                transition: height 0.35s ease;
+            }
+            .navbar-collapse.show {
+                height: auto;
+                overflow: visible;
+            }
+            .navbar-nav {
+                flex-direction: column;
+                padding: 0.5rem 0 !important;
+                margin: 0 !important;
+            }
+            .navbar-nav .nav-item {
+                margin: 0 !important;
+            }
+            .navbar-nav .nav-link {
+                padding: 0.75rem 1rem !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                display: flex !important;
+                align-items: center !important;
+            }
+            .navbar-nav .nav-link:hover {
+                background: var(--primary-100) !important;
+            }
+            .navbar-nav .dropdown-menu {
+                background: var(--primary-50);
+                border: none;
+                position: static;
+                box-shadow: none;
+                padding: 0.5rem 1rem;
+                margin: 0 !important;
+            }
+            .navbar-nav .dropdown-item {
+                padding: 0.5rem 0 !important;
+            }
+            .navbar-nav .dropdown-toggle::after {
+                margin-left: auto;
+            }
         }
     </style>
 </head>

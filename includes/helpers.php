@@ -12,6 +12,9 @@ function getSetting(string $key, string $default = ''): string {
     static $cache = [];
     if (!isset($cache[$key])) {
         $pdo = getDB();
+        if (!$pdo) {
+            return $default;
+        }
         $stmt = $pdo->prepare("SELECT setting_value FROM settings WHERE setting_key = ?");
         $stmt->execute([$key]);
         $row = $stmt->fetch();
@@ -25,6 +28,9 @@ function getSetting(string $key, string $default = ''): string {
  */
 function getAllSettings(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $stmt = $pdo->query("SELECT setting_key, setting_value FROM settings");
     $settings = [];
     while ($row = $stmt->fetch()) {
@@ -38,6 +44,9 @@ function getAllSettings(): array {
  */
 function getCMSSection(string $page, string $sectionKey): ?array {
     $pdo = getDB();
+    if (!$pdo) {
+        return null;
+    }
     $stmt = $pdo->prepare("SELECT * FROM cms_sections WHERE page = ? AND section_key = ?");
     $stmt->execute([$page, $sectionKey]);
     $row = $stmt->fetch();
@@ -49,6 +58,9 @@ function getCMSSection(string $page, string $sectionKey): ?array {
  */
 function getCMSSections(string $page): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $stmt = $pdo->prepare("SELECT * FROM cms_sections WHERE page = ? AND is_active = 1 ORDER BY sort_order");
     $stmt->execute([$page]);
     return $stmt->fetchAll();
@@ -93,6 +105,9 @@ function createSlug(string $string): string {
 function getUserRole(?int $roleId): string {
     if (!$roleId) return 'Guest';
     $pdo = getDB();
+    if (!$pdo) {
+        return 'User';
+    }
     $stmt = $pdo->prepare("SELECT role_name FROM roles WHERE role_id = ?");
     $stmt->execute([$roleId]);
     $row = $stmt->fetch();
@@ -180,6 +195,9 @@ function flashMessage(): string {
  */
 function getHeroSliders(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $stmt = $pdo->query("SELECT * FROM hero_sliders WHERE is_active = 1 ORDER BY sort_order");
     return $stmt->fetchAll();
 }
@@ -189,6 +207,9 @@ function getHeroSliders(): array {
  */
 function getTestimonials(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $stmt = $pdo->query("SELECT * FROM testimonials WHERE is_active = 1 ORDER BY sort_order");
     return $stmt->fetchAll();
 }
@@ -198,6 +219,9 @@ function getTestimonials(): array {
  */
 function getGallery(int $limit = 0): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $sql = "SELECT * FROM gallery WHERE is_active = 1 ORDER BY sort_order";
     if ($limit > 0) $sql .= " LIMIT " . (int)$limit;
     return $pdo->query($sql)->fetchAll();
@@ -208,6 +232,9 @@ function getGallery(int $limit = 0): array {
  */
 function getPartners(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     return $pdo->query("SELECT * FROM partners WHERE is_active = 1 ORDER BY sort_order")->fetchAll();
 }
 
@@ -216,6 +243,9 @@ function getPartners(): array {
  */
 function getTeamMembers(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     return $pdo->query("SELECT * FROM team_members WHERE is_active = 1 ORDER BY sort_order")->fetchAll();
 }
 
@@ -224,6 +254,9 @@ function getTeamMembers(): array {
  */
 function getFeaturedProducts(int $limit = 8): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $stmt = $pdo->prepare("SELECT * FROM products WHERE is_featured = 1 AND is_active = 1 ORDER BY product_id DESC LIMIT ?");
     $stmt->bindValue(1, $limit, PDO::PARAM_INT);
     $stmt->execute();
@@ -235,6 +268,9 @@ function getFeaturedProducts(int $limit = 8): array {
  */
 function getActiveProjects(int $limit = 6): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $stmt = $pdo->prepare("SELECT p.*, pc.name as category_name FROM projects p LEFT JOIN project_categories pc ON p.category_id = pc.category_id WHERE p.is_active = 1 ORDER BY p.project_id DESC LIMIT ?");
     $stmt->bindValue(1, $limit, PDO::PARAM_INT);
     $stmt->execute();
@@ -245,7 +281,11 @@ function getActiveProjects(int $limit = 6): array {
  * Get latest news/blog
  */
 function getLatestNews(int $limit = 3): array {
-    $cms = getDB()->prepare("SELECT * FROM cms_sections WHERE page = 'news' AND is_active = 1 ORDER BY created_at DESC LIMIT ?");
+    $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
+    $cms = $pdo->prepare("SELECT * FROM cms_sections WHERE page = 'news' AND is_active = 1 ORDER BY created_at DESC LIMIT ?");
     $cms->bindValue(1, $limit, PDO::PARAM_INT);
     $cms->execute();
     return $cms->fetchAll();
@@ -279,6 +319,9 @@ function getCartCount(): int {
  */
 function getProjectCategories(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     return $pdo->query("SELECT * FROM project_categories WHERE is_active = 1 ORDER BY name")->fetchAll();
 }
 
@@ -287,6 +330,9 @@ function getProjectCategories(): array {
  */
 function getActiveJobs(int $limit = 0, string $department = '', string $search = ''): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     $conditions = ['is_active = 1'];
     $params = [];
     if (!empty($department)) {
@@ -311,6 +357,9 @@ function getActiveJobs(int $limit = 0, string $department = '', string $search =
  */
 function getJobDepartments(): array {
     $pdo = getDB();
+    if (!$pdo) {
+        return [];
+    }
     return $pdo->query("SELECT DISTINCT department FROM career_jobs WHERE is_active = 1 AND department IS NOT NULL AND department != '' ORDER BY department")->fetchAll(PDO::FETCH_COLUMN);
 }
 

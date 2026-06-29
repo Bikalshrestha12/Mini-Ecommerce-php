@@ -141,9 +141,48 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     const hamburger = document.querySelector('.hamburger-animated');
-    if (hamburger) {
-        hamburger.addEventListener('click', function() {
+    const navbarCollapse = document.getElementById('publicNavbar');
+    
+    if (hamburger && navbarCollapse) {
+        // Handle hamburger click
+        hamburger.addEventListener('click', function(e) {
             this.classList.toggle('active');
+            navbarCollapse.classList.toggle('show');
+            hamburger.setAttribute('aria-expanded', hamburger.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
+        });
+        
+        // Bootstrap collapse events
+        navbarCollapse.addEventListener('shown.bs.collapse', function() {
+            hamburger.classList.add('active');
+            navbarCollapse.classList.add('show');
+            hamburger.setAttribute('aria-expanded', 'true');
+        });
+        
+        navbarCollapse.addEventListener('hidden.bs.collapse', function() {
+            hamburger.classList.remove('active');
+            navbarCollapse.classList.remove('show');
+            hamburger.setAttribute('aria-expanded', 'false');
+        });
+        
+        // Close menu when clicking on a link (mobile only)
+        const navLinks = navbarCollapse.querySelectorAll('.nav-link');
+        navLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                if (window.innerWidth < 992) {
+                    hamburger.classList.remove('active');
+                    navbarCollapse.classList.remove('show');
+                    hamburger.setAttribute('aria-expanded', 'false');
+                }
+            });
+        });
+        
+        // Ensure menu closes on resize to desktop
+        window.addEventListener('resize', function() {
+            if (window.innerWidth >= 992) {
+                hamburger.classList.remove('active');
+                navbarCollapse.classList.remove('show');
+                hamburger.setAttribute('aria-expanded', 'false');
+            }
         });
     }
 

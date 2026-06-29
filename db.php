@@ -5,7 +5,7 @@
 
 require_once __DIR__ . '/config.php';
 
-function getDB(): PDO {
+function getDB(): ?PDO {
     static $pdo = null;
     if ($pdo === null) {
         try {
@@ -17,12 +17,13 @@ function getDB(): PDO {
             ];
             $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
         } catch (PDOException $e) {
-            die('<div style="font-family:sans-serif;padding:2rem;color:#c0392b;">
-                    <h2>Database Connection Failed</h2>
-                    <p>' . htmlspecialchars($e->getMessage()) . '</p>
-                    <p>Please check your <code>config.php</code> credentials and ensure MySQL is running.</p>
-                 </div>');
+            error_log('Database connection failed: ' . $e->getMessage());
+            $pdo = false;
         }
     }
-    return $pdo;
+    return $pdo === false ? null : $pdo;
+}
+
+function dbAvailable(): bool {
+    return getDB() !== null;
 }

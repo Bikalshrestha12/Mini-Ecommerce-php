@@ -19,10 +19,17 @@ $partners = getPartners();
 
 $galleryImages = getGallery(12);
 
-$totalProducts = $pdo->query("SELECT COUNT(*) FROM products WHERE is_active = 1")->fetchColumn();
-$totalProjects = $pdo->query("SELECT COUNT(*) FROM projects WHERE is_active = 1")->fetchColumn();
-$totalUsers    = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
-$totalOrders   = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+$totalProducts = 0;
+$totalProjects = 0;
+$totalUsers    = 0;
+$totalOrders   = 0;
+
+if ($pdo) {
+    $totalProducts = $pdo->query("SELECT COUNT(*) FROM products WHERE is_active = 1")->fetchColumn();
+    $totalProjects = $pdo->query("SELECT COUNT(*) FROM projects WHERE is_active = 1")->fetchColumn();
+    $totalUsers    = $pdo->query("SELECT COUNT(*) FROM users")->fetchColumn();
+    $totalOrders   = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+}
 
 $siteAddress = getSetting('contact_address', '');
 $sitePhone   = getSetting('contact_phone', '');
