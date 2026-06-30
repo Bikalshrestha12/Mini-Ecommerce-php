@@ -10,18 +10,32 @@ $pdo    = getDB();
 $userId = $_SESSION['user'];
 
 // Fetch orders with item details
+// $stmt = $pdo->prepare(
+//     'SELECT o.*,
+//             GROUP_CONCAT(p.name ORDER BY oi.item_id SEPARATOR "||") AS product_names,
+//             GROUP_CONCAT(oi.quantity ORDER BY oi.item_id SEPARATOR "||") AS quantities,
+//             GROUP_CONCAT(oi.price ORDER BY oi.item_id SEPARATOR "||")    AS item_prices,
+//             GROUP_CONCAT(p.image ORDER BY oi.item_id SEPARATOR "||")     AS images
+//        FROM orders o
+//        JOIN order_items oi ON oi.order_id = o.order_id
+//        JOIN products   p  ON p.product_id = oi.product_id
+//       WHERE o.user_id = ?
+//       GROUP BY o.order_id
+//       ORDER BY o.order_date DESC'
+// );
 $stmt = $pdo->prepare(
-    'SELECT o.*,
-            GROUP_CONCAT(p.name ORDER BY oi.item_id SEPARATOR "||") AS product_names,
-            GROUP_CONCAT(oi.quantity ORDER BY oi.item_id SEPARATOR "||") AS quantities,
-            GROUP_CONCAT(oi.price ORDER BY oi.item_id SEPARATOR "||")    AS item_prices,
-            GROUP_CONCAT(p.image ORDER BY oi.item_id SEPARATOR "||")     AS images
-       FROM orders o
-       JOIN order_items oi ON oi.order_id = o.order_id
-       JOIN products   p  ON p.product_id = oi.product_id
-      WHERE o.user_id = ?
-      GROUP BY o.order_id
-      ORDER BY o.order_date DESC'
+    'SELECT
+        o.*,
+        GROUP_CONCAT(p.name, "||") AS product_names,
+        GROUP_CONCAT(oi.quantity, "||") AS quantities,
+        GROUP_CONCAT(oi.price, "||") AS item_prices,
+        GROUP_CONCAT(p.image, "||") AS images
+     FROM orders o
+     JOIN order_items oi ON oi.order_id = o.order_id
+     JOIN products p ON p.product_id = oi.product_id
+     WHERE o.user_id = ?
+     GROUP BY o.order_id
+     ORDER BY o.order_date DESC'
 );
 $stmt->execute([$userId]);
 $orders = $stmt->fetchAll();

@@ -24,6 +24,7 @@
     --border-hover: #cbd5e1;
 
     --text:         #1e293b;
+    --texts:         #e5e5e5;
     --text-muted:   #64748b;
     --text-light:   #94a3b8;
 
@@ -420,7 +421,7 @@ body.auth-page {
 .card-header h3 {
     font-size: 1rem;
     font-weight: 700;
-    color: var(--text);
+    color: var(--texts);
     display: flex; align-items: center; gap: .5rem;
 }
 .card-body { padding: 1.25rem; }

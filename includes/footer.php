@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/helpers.php';
+
 $siteName    = getSetting('site_name', APP_NAME);
 $siteEmail   = getSetting('contact_email', 'support@company.com');
 $sitePhone   = getSetting('contact_phone', '+977-9800000000');

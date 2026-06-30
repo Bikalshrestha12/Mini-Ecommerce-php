@@ -54,9 +54,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         try {
             // 1. Re-verify stock
             foreach ($cart as $item) {
-                $stmt = $pdo->prepare('SELECT stock, name FROM products WHERE product_id = ? FOR UPDATE');
+                // $stmt = $pdo->prepare('SELECT stock, name FROM products WHERE product_id = ? FOR UPDATE');
+                // $stmt->execute([(int)$item['product_id']]);
+                // $p = $stmt->fetch();
+                $stmt = $pdo->prepare('SELECT stock, name FROM products WHERE product_id = ?');
                 $stmt->execute([(int)$item['product_id']]);
-                $p = $stmt->fetch();
+                $p = $stmt->fetch(PDO::FETCH_ASSOC);
 
                 if (!$p) throw new Exception('Product #' . $item['product_id'] . ' not found.');
                 if ($p['stock'] < $item['quantity']) {

@@ -34,6 +34,7 @@ $currentDir  = basename(dirname($_SERVER['PHP_SELF']));
     
     <!-- Custom Stylesheet -->
     <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/style.css">
+    <link rel="stylesheet" href="<?= APP_URL ?>/assets/css/public.css">
     
     <style>
         :root {
