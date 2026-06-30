@@ -25,12 +25,12 @@ function isLoggedIn(): bool {
         $token = $_COOKIE[COOKIE_NAME];
         $pdo   = getDB();
         $stmt  = $pdo->prepare(
-            'SELECT u.user_id, u.name, u.email, u.role_id, r.role_name
+            "SELECT u.user_id, u.name, u.email, u.role_id, r.role_name
                FROM user_tokens t
                JOIN users u ON u.user_id = t.user_id
                JOIN roles r ON r.role_id = u.role_id
-              WHERE t.token = ? AND t.expires_at > NOW()
-              LIMIT 1'
+              WHERE t.token = ? AND t.expires_at > datetime('now')
+              LIMIT 1"
         );
         $stmt->execute([$token]);
         $row = $stmt->fetch();

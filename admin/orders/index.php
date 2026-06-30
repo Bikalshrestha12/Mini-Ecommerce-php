@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? '';
         $validStatuses = ['Pending', 'Processing', 'Shipped', 'Delivered', 'Cancelled', 'Refunded'];
         if ($order_id && in_array($status, $validStatuses)) {
-            $stmt = $pdo->prepare("UPDATE orders SET status = ?, updated_at = NOW() WHERE order_id = ?");
+            $stmt = $pdo->prepare("UPDATE orders SET status = ?, updated_at = datetime('now') WHERE order_id = ?");
             $stmt->execute([$status, $order_id]);
             $success = 'Order status updated.';
         }
@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $order_id = $_POST['order_id'] ?? '';
         $payment_status = trim($_POST['payment_status'] ?? '');
         if ($order_id && $payment_status) {
-            $stmt = $pdo->prepare("UPDATE orders SET payment_status = ?, updated_at = NOW() WHERE order_id = ?");
+            $stmt = $pdo->prepare("UPDATE orders SET payment_status = ?, updated_at = datetime('now') WHERE order_id = ?");
             $stmt->execute([$payment_status, $order_id]);
             $success = 'Payment status updated.';
         }
@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $order_id = $_POST['order_id'] ?? '';
         $tracking_number = trim($_POST['tracking_number'] ?? '');
         if ($order_id) {
-            $stmt = $pdo->prepare("UPDATE orders SET tracking_number = ?, updated_at = NOW() WHERE order_id = ?");
+            $stmt = $pdo->prepare("UPDATE orders SET tracking_number = ?, updated_at = datetime('now') WHERE order_id = ?");
             $stmt->execute([$tracking_number ?: null, $order_id]);
             $success = 'Tracking number updated.';
         }

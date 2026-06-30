@@ -95,11 +95,11 @@ function isActive(string $dir, string $file = ''): string {
                 <i class="fas fa-shopping-cart"></i> <span>Orders</span>
             </a>
         </li>
-        <li class="nav-item">
+        <!-- <li class="nav-item">
             <a href="<?= APP_URL ?>/admin/projects/index.php" class="nav-link <?= isActive('projects') ?>">
                 <i class="fas fa-project-diagram"></i> <span>Projects</span>
             </a>
-        </li>
+        </li> -->
         <li class="nav-item">
             <a href="<?= APP_URL ?>/admin/careers/index.php" class="nav-link <?= isActive('careers') ?>">
                 <i class="fas fa-briefcase"></i> <span>Careers</span>

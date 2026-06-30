@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             if (empty($errors)) {
                 if ($action === 'add') {
-                    $stmt = $pdo->prepare("INSERT INTO products (name, slug, description, price, category_id, stock, is_featured, is_active, image, brochure, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                    $stmt = $pdo->prepare("INSERT INTO products (name, slug, description, price, category_id, stock, is_featured, is_active, image, brochure, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))");
                     $stmt->execute([$name, $slug, $description, $price, $category_id, $stock, $is_featured, $is_active, $imagePath ?: null, $brochurePath ?: null]);
                     $success = 'Product added successfully.';
                 } else {
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $finalImage = $imagePath ?: $old['image'];
                     $finalBrochure = $brochurePath ?: $old['brochure'];
 
-                    $stmt = $pdo->prepare("UPDATE products SET name=?, slug=?, description=?, price=?, category_id=?, stock=?, is_featured=?, is_active=?, image=?, brochure=?, updated_at=NOW() WHERE product_id=?");
+                    $stmt = $pdo->prepare("UPDATE products SET name=?, slug=?, description=?, price=?, category_id=?, stock=?, is_featured=?, is_active=?, image=?, brochure=?, updated_at=datetime('now') WHERE product_id=?");
                     $stmt->execute([$name, $slug, $description, $price, $category_id, $stock, $is_featured, $is_active, $finalImage, $finalBrochure, $product_id]);
                     $success = 'Product updated successfully.';
                 }

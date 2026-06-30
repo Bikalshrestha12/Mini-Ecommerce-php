@@ -243,7 +243,7 @@ $siteEmail   = getSetting('contact_email', '');
 </section>
 <?php endif; ?>
 
-<section class="counter-section" data-aos="fade-up">
+<!-- <section class="counter-section" data-aos="fade-up">
     <div class="container">
         <div class="row g-4">
             <div class="col-6 col-md-3" data-aos="fade-up" data-aos-delay="0">
@@ -276,7 +276,7 @@ $siteEmail   = getSetting('contact_email', '');
             </div>
         </div>
     </div>
-</section>
+</section> -->
 
 <?php if ($whyChooseUs): ?>
 <section class="section-padding" data-aos="fade-up">

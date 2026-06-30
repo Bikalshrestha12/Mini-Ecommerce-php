@@ -32,11 +32,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($errors)) {
             if ($action === 'add') {
-                $stmt = $pdo->prepare("INSERT INTO career_jobs (title, slug, department, location, employment_type, description, requirements, responsibilities, salary_range, application_deadline, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                $stmt = $pdo->prepare("INSERT INTO career_jobs (title, slug, department, location, employment_type, description, requirements, responsibilities, salary_range, application_deadline, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))");
                 $stmt->execute([$title, $slug, $department, $location, $employment_type, $description, $requirements, $responsibilities, $salary_range, $application_deadline ?: null, $is_active]);
                 $success = 'Job added successfully.';
             } else {
-                $stmt = $pdo->prepare("UPDATE career_jobs SET title=?, slug=?, department=?, location=?, employment_type=?, description=?, requirements=?, responsibilities=?, salary_range=?, application_deadline=?, is_active=?, updated_at=NOW() WHERE job_id=?");
+                $stmt = $pdo->prepare("UPDATE career_jobs SET title=?, slug=?, department=?, location=?, employment_type=?, description=?, requirements=?, responsibilities=?, salary_range=?, application_deadline=?, is_active=?, updated_at=datetime('now') WHERE job_id=?");
                 $stmt->execute([$title, $slug, $department, $location, $employment_type, $description, $requirements, $responsibilities, $salary_range, $application_deadline ?: null, $is_active, $job_id]);
                 $success = 'Job updated successfully.';
             }

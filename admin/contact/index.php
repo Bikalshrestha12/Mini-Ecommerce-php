@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $message_id = (int)$_POST['message_id'];
         $reply = $_POST['reply'] ?? '';
         if (!empty($reply)) {
-            $stmt = $pdo->prepare("UPDATE contact_messages SET reply = ?, replied_at = NOW() WHERE message_id = ?");
+            $stmt = $pdo->prepare("UPDATE contact_messages SET reply = ?, replied_at = datetime('now') WHERE message_id = ?");
             $stmt->execute([$reply, $message_id]);
             $_SESSION['flash_success'] = 'Reply sent successfully.';
         }

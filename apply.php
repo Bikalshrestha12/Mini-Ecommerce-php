@@ -59,15 +59,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             if ($id && $editData) {
                 if ($documents) {
-                    $stmt = $pdo->prepare("UPDATE admission_applications SET program_id=?, applicant_name=?, email=?, phone=?, address=?, date_of_birth=?, gender=?, previous_education=?, documents=?, updated_at=NOW() WHERE application_id=?");
+                    $stmt = $pdo->prepare("UPDATE admission_applications SET program_id=?, applicant_name=?, email=?, phone=?, address=?, date_of_birth=?, gender=?, previous_education=?, documents=?, updated_at=datetime('now') WHERE application_id=?");
                     $stmt->execute([$programId, $applicantName, $email, $phone, $address, $dateOfBirth ?: null, $gender, $previousEducation, $documents, $id]);
                 } else {
-                    $stmt = $pdo->prepare("UPDATE admission_applications SET program_id=?, applicant_name=?, email=?, phone=?, address=?, date_of_birth=?, gender=?, previous_education=?, updated_at=NOW() WHERE application_id=?");
+                    $stmt = $pdo->prepare("UPDATE admission_applications SET program_id=?, applicant_name=?, email=?, phone=?, address=?, date_of_birth=?, gender=?, previous_education=?, updated_at=datetime('now') WHERE application_id=?");
                     $stmt->execute([$programId, $applicantName, $email, $phone, $address, $dateOfBirth ?: null, $gender, $previousEducation, $id]);
                 }
                 $msg = 'Application updated successfully.';
             } else {
-                $stmt = $pdo->prepare("INSERT INTO admission_applications (program_id, applicant_name, email, phone, address, date_of_birth, gender, previous_education, documents, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                $stmt = $pdo->prepare("INSERT INTO admission_applications (program_id, applicant_name, email, phone, address, date_of_birth, gender, previous_education, documents, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))");
                 $stmt->execute([$programId, $applicantName, $email, $phone, $address, $dateOfBirth ?: null, $gender, $previousEducation, $documents]);
                 $msg = 'Application submitted successfully.';
             }
@@ -87,15 +87,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (empty($errors)) {
             if ($id && $editData) {
                 if ($resumeFile) {
-                    $stmt = $pdo->prepare("UPDATE career_applications SET job_id=?, applicant_name=?, email=?, phone=?, cover_letter=?, resume_file=?, updated_at=NOW() WHERE application_id=?");
+                    $stmt = $pdo->prepare("UPDATE career_applications SET job_id=?, applicant_name=?, email=?, phone=?, cover_letter=?, resume_file=?, updated_at=datetime('now') WHERE application_id=?");
                     $stmt->execute([$selectedJobId, $applicantName, $email, $phone, $coverLetter, $resumeFile, $id]);
                 } else {
-                    $stmt = $pdo->prepare("UPDATE career_applications SET job_id=?, applicant_name=?, email=?, phone=?, cover_letter=?, updated_at=NOW() WHERE application_id=?");
+                    $stmt = $pdo->prepare("UPDATE career_applications SET job_id=?, applicant_name=?, email=?, phone=?, cover_letter=?, updated_at=datetime('now') WHERE application_id=?");
                     $stmt->execute([$selectedJobId, $applicantName, $email, $phone, $coverLetter, $id]);
                 }
                 $msg = 'Application updated successfully.';
             } else {
-                $stmt = $pdo->prepare("INSERT INTO career_applications (job_id, applicant_name, email, phone, cover_letter, resume_file, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
+                $stmt = $pdo->prepare("INSERT INTO career_applications (job_id, applicant_name, email, phone, cover_letter, resume_file, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, datetime('now'), datetime('now'))");
                 $stmt->execute([$selectedJobId, $applicantName, $email, $phone, $coverLetter, $resumeFile]);
                 $msg = 'Application submitted successfully.';
             }

@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $status = $_POST['status'] ?? '';
         $validStatuses = ['Pending', 'Reviewed', 'Shortlisted', 'Interviewed', 'Accepted', 'Rejected'];
         if ($application_id && in_array($status, $validStatuses)) {
-            $stmt = $pdo->prepare("UPDATE career_applications SET status = ?, updated_at = NOW() WHERE application_id = ?");
+            $stmt = $pdo->prepare("UPDATE career_applications SET status = ?, updated_at = datetime('now') WHERE application_id = ?");
             $stmt->execute([$status, $application_id]);
             $success = 'Application status updated.';
         }

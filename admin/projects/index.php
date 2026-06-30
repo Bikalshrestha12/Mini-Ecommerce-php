@@ -31,12 +31,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($errors)) {
             if ($action === 'add') {
-                $stmt = $pdo->prepare("INSERT INTO projects (title, slug, description, category_id, client_name, completion_date, project_url, is_featured, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())");
+                $stmt = $pdo->prepare("INSERT INTO projects (title, slug, description, category_id, client_name, completion_date, project_url, is_featured, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))");
                 $stmt->execute([$title, $slug, $description, $category_id, $client_name, $completion_date ?: null, $project_url, $is_featured, $is_active]);
                 $project_id = $pdo->lastInsertId();
                 $success = 'Project added successfully.';
             } else {
-                $stmt = $pdo->prepare("UPDATE projects SET title=?, slug=?, description=?, category_id=?, client_name=?, completion_date=?, project_url=?, is_featured=?, is_active=?, updated_at=NOW() WHERE project_id=?");
+                $stmt = $pdo->prepare("UPDATE projects SET title=?, slug=?, description=?, category_id=?, client_name=?, completion_date=?, project_url=?, is_featured=?, is_active=?, updated_at=datetime('now') WHERE project_id=?");
                 $stmt->execute([$title, $slug, $description, $category_id, $client_name, $completion_date ?: null, $project_url, $is_featured, $is_active, $project_id]);
                 $success = 'Project updated successfully.';
             }

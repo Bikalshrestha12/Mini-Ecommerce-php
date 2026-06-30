@@ -28,11 +28,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (empty($errors)) {
             if ($action === 'add') {
-                $stmt = $pdo->prepare("INSERT INTO admission_programs (title, slug, description, duration, eligibility, fee, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, NOW())");
+                $stmt = $pdo->prepare("INSERT INTO admission_programs (title, slug, description, duration, eligibility, fee, is_active, created_at) VALUES (?, ?, ?, ?, ?, ?, ?, datetime('now'))");
                 $stmt->execute([$title, $slug, $description, $duration, $eligibility, $fee, $is_active]);
                 $success = 'Program added successfully.';
             } else {
-                $stmt = $pdo->prepare("UPDATE admission_programs SET title=?, slug=?, description=?, duration=?, eligibility=?, fee=?, is_active=?, updated_at=NOW() WHERE program_id=?");
+                $stmt = $pdo->prepare("UPDATE admission_programs SET title=?, slug=?, description=?, duration=?, eligibility=?, fee=?, is_active=?, updated_at=datetime('now') WHERE program_id=?");
                 $stmt->execute([$title, $slug, $description, $duration, $eligibility, $fee, $is_active, $program_id]);
                 $success = 'Program updated successfully.';
             }
