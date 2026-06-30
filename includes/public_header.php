@@ -108,18 +108,12 @@ function isActive(string $file, string $dir = ''): string {
         @media (max-width: 991.98px) {
             .navbar-nav .nav-link { padding: 0.5rem 0.75rem !important; }
             .top-bar .contact-info { display: none; }
+            .top-bar .social-links a { width: 24px; height: 24px; font-size: 0.7rem; }
             .navbar-collapse {
                 background: #f8f9fa;
                 border-top: 1px solid var(--border-color);
                 margin-top: 0.5rem;
                 padding: 0 !important;
-                height: 0;
-                overflow: hidden;
-                transition: height 0.35s ease;
-            }
-            .navbar-collapse.show {
-                height: auto;
-                overflow: visible;
             }
             .navbar-nav {
                 flex-direction: column;
@@ -153,6 +147,12 @@ function isActive(string $file, string $dir = ''): string {
             .navbar-nav .dropdown-toggle::after {
                 margin-left: auto;
             }
+        }
+        @media (max-width: 575.98px) {
+            .top-bar { font-size: 0.7rem; padding: 0.25rem 0; }
+            .top-bar .social-links { display: none; }
+            .navbar-brand { font-size: 1.1rem; }
+            .navbar-brand i { font-size: 1.2rem; }
         }
     </style>
 </head>

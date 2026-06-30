@@ -182,14 +182,8 @@
 
     /* ── Mobile Menu ───────────────────────────────────────── */
     function initMobileMenu() {
-        const toggle = doc.querySelector('.navbar-toggler');
         const menu = doc.querySelector('.navbar-collapse');
-        if (!toggle || !menu) return;
-
-        toggle.addEventListener('click', function () {
-            const expanded = toggle.getAttribute('aria-expanded') === 'true';
-            toggle.setAttribute('aria-expanded', String(!expanded));
-        });
+        if (!menu) return;
 
         menu.querySelectorAll('.nav-link').forEach(function (link) {
             link.addEventListener('click', function () {

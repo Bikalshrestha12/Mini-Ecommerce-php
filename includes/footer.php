@@ -147,8 +147,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Handle hamburger click
         hamburger.addEventListener('click', function(e) {
             this.classList.toggle('active');
-            navbarCollapse.classList.toggle('show');
-            hamburger.setAttribute('aria-expanded', hamburger.getAttribute('aria-expanded') === 'true' ? 'false' : 'true');
         });
         
         // Bootstrap collapse events
@@ -170,18 +168,17 @@ document.addEventListener('DOMContentLoaded', function() {
             link.addEventListener('click', function() {
                 if (window.innerWidth < 992) {
                     hamburger.classList.remove('active');
-                    navbarCollapse.classList.remove('show');
-                    hamburger.setAttribute('aria-expanded', 'false');
+                    const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                    if (bsCollapse) bsCollapse.hide();
                 }
             });
         });
         
-        // Ensure menu closes on resize to desktop
         window.addEventListener('resize', function() {
             if (window.innerWidth >= 992) {
                 hamburger.classList.remove('active');
-                navbarCollapse.classList.remove('show');
-                hamburger.setAttribute('aria-expanded', 'false');
+                const bsCollapse = bootstrap.Collapse.getInstance(navbarCollapse);
+                if (bsCollapse) bsCollapse.hide();
             }
         });
     }

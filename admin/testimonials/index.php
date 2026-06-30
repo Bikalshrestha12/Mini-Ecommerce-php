@@ -220,7 +220,7 @@ $(document).ready(function() {
         pageLength: 25
     });
 
-    $('.edit-testimonial').click(function() {
+    $(document).on('click', '.edit-testimonial', function() {
         const d = $(this).data();
         $('#testimonialModalLabel').text('Edit Testimonial');
         $('#testimonial_id').val(d.id);
@@ -247,7 +247,7 @@ $(document).ready(function() {
         }
     });
 
-    $('.delete-testimonial').click(function() {
+    $(document).on('click', '.delete-testimonial', function() {
         const id = $(this).data('id');
         Swal.fire({
             title: 'Delete Testimonial?',

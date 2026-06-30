@@ -203,7 +203,7 @@ $(document).ready(function() {
         pageLength: 25
     });
 
-    $('.edit-member').click(function() {
+    $(document).on('click', '.edit-member', function() {
         const d = $(this).data();
         $('#memberModalLabel').text('Edit Member');
         $('#member_id').val(d.id);
@@ -229,7 +229,7 @@ $(document).ready(function() {
         }
     });
 
-    $('.delete-member').click(function() {
+    $(document).on('click', '.delete-member', function() {
         const id = $(this).data('id');
         Swal.fire({
             title: 'Delete Team Member?',

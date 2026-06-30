@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hero Sliders - Mini-Ecommerce</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://cdn.datatables.net/1.13.6/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/2.4.1/css/buttons.bootstrap5.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="http://localhost:8000/assets/admin/css/admin.css">
+    <style>
+        :root {
+            --sidebar-width: 260px;
+            --primary: #6366f1;
+            --primary-dark: #4f46e5;
+            --sidebar-bg: #0f172a;
+            --sidebar-text: #94a3b8;
+            --sidebar-active: #6366f1;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: #f1f5f9;
+            min-height: 100vh;
+        }
+        .admin-wrapper { display: flex; width: 100%; min-height: 100vh; }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            flex: 1;
+            padding: 1.5rem 2rem;
+            min-height: 100vh;
+            transition: margin-left 0.3s;
+        }
+        .navbar-admin {
+            background: #fff;
+            padding: 0.75rem 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+        .navbar-admin .nav-search {
+            display: flex;
+            align-items: center;
+            background: #f8fafc;
+            border-radius: 0.75rem;
+            padding: 0.4rem 1rem;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+        }
+        .navbar-admin .nav-search:focus-within {
+            border-color: var(--primary);
+            background: #fff;
+        }
+        .navbar-admin .nav-search input {
+            border: none;
+            background: none;
+            outline: none;
+            padding: 0.3rem 0.5rem;
+            font-size: 0.85rem;
+            color: #1e293b;
+            min-width: 200px;
+        }
+        .navbar-admin .nav-search input::placeholder { color: #94a3b8; }
+        .navbar-admin .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .navbar-admin .nav-icon-btn {
+            position: relative;
+            width: 40px; height: 40px;
+            border-radius: 50%;
+            background: #f8fafc;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #64748b;
+            text-decoration: none;
+            transition: all 0.2s;
+        }
+        .navbar-admin .nav-icon-btn:hover {
+            background: #e0e7ff;
+            color: var(--primary);
+        }
+        .navbar-admin .nav-icon-btn .notif-badge {
+            position: absolute;
+            top: -4px;
+            right: -4px;
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: #ef4444;
+            color: #fff;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .navbar-admin .admin-avatar-dropdown {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.25rem 0.75rem 0.25rem 0.25rem;
+            border-radius: 9999px;
+            background: #f8fafc;
+            cursor: pointer;
+            text-decoration: none;
+            color: #1e293b;
+            transition: all 0.2s;
+            border: none;
+        }
+        .navbar-admin .admin-avatar-dropdown:hover {
+            background: #e0e7ff;
+        }
+        .navbar-admin .admin-avatar-dropdown .avatar-sm {
+            width: 34px; height: 34px; border-radius: 50%;
+            object-fit: cover;
+        }
+        .navbar-admin .admin-avatar-dropdown .avatar-initials {
+            width: 34px; height: 34px; border-radius: 50%;
+            background: var(--primary);
+            color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .card {
+            border: none;
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px rgba(0,0,0,.06);
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+        .card-header {
+            background: #fff;
+            border-bottom: 1px solid #f1f5f9;
+            padding: 1rem 1.25rem;
+            font-weight: 600;
+        }
+        .table th { font-weight: 600; color: #475569; border-top: none; }
+        .table td { vertical-align: middle; }
+        .btn-primary { background: var(--primary); border-color: var(--primary); }
+        .btn-primary:hover { background: var(--primary-dark); border-color: var(--primary-dark); }
+        .img-thumb { width: 60px; height: 60px; object-fit: cover; border-radius: 0.5rem; }
+        .status-badge { padding: 0.25rem 0.75rem; border-radius: 9999px; font-size: 0.75rem; font-weight: 600; }
+        .status-active { background: #dcfce7; color: #166534; }
+        .status-inactive { background: #fef2f2; color: #991b1b; }
+        .status-read { background: #dbeafe; color: #1e40af; }
+        .status-unread { background: #fef3c7; color: #92400e; }
+        .dt-buttons { margin-bottom: 0.5rem; }
+        .dataTables_filter { margin-bottom: 0.5rem; }
+        .avatar-thumb { width: 40px; height: 40px; border-radius: 50%; object-fit: cover; }
+        .preview-img { max-width: 200px; max-height: 200px; border-radius: 0.5rem; margin-top: 0.5rem; }
+        .nav-tabs .nav-link { color: #475569; font-weight: 500; }
+        .nav-tabs .nav-link.active { color: var(--primary); border-bottom: 2px solid var(--primary); }
+        .tab-content { padding-top: 1.5rem; }
+        .report-card { transition: transform 0.2s; cursor: pointer; }
+        .report-card:hover { transform: translateY(-2px); }
+        .footer-text { font-size: 0.875rem; color: #94a3b8; }
+        .sort-handle { cursor: grab; color: #94a3b8; }
+        .dropdown-menu { border-radius: 0.75rem; border: 1px solid #e2e8f0; box-shadow: 0 10px 30px rgba(0,0,0,.1); padding: 0.5rem; }
+        .dropdown-item { border-radius: 0.5rem; padding: 0.5rem 0.75rem; display: flex; align-items: center; gap: 0.5rem; }
+        .dropdown-item:hover { background: #f1f5f9; }
+        .dropdown-item.text-danger:hover { background: #fee2e2; }
+        .sidebar-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            color: #64748b;
+            cursor: pointer;
+        }
+        @media (max-width: 991.98px) {
+            .main-content { margin-left: 0; }
+            .navbar-admin .nav-search input { min-width: 120px; }
+            .sidebar-toggle { display: block; }
+        }
+    </style>
+</head>
+<body>
+<div class="admin-wrapper">
+
+    <div class="main-content">
+        <nav class="navbar-admin">
+            <div class="d-flex align-items-center gap-3">
+                <button class="sidebar-toggle" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+                <div class="nav-search">
+                    <i class="fas fa-search" style="color:#94a3b8"></i>
+                    <input type="text" placeholder="Search anything...">
+                </div>
+            </div>
+            <div class="nav-actions">
+                <a href="#" class="nav-icon-btn" title="Notifications">
+                    <i class="fas fa-bell"></i>
+                    <span class="notif-badge">3</span>
+                </a>
+                <a href="#" class="nav-icon-btn" title="Messages">
+                    <i class="fas fa-envelope"></i>
+                    <span class="notif-badge">1</span>
+                </a>
+                <div class="dropdown">
+                    <button class="admin-avatar-dropdown dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                                                        <div class="avatar-initials">S</div>
+                                                <span class="fw-medium small">Super Admin</span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end">
+                        <li><a class="dropdown-item" href="http://localhost:8000/admin/users/profile.php"><i class="fas fa-user-circle"></i> Profile</a></li>
+                        <li><a class="dropdown-item" href="http://localhost:8000/admin/settings/"><i class="fas fa-cog"></i> Settings</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item text-danger" href="http://localhost:8000/logout.php"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+<nav class="admin-sidebar" id="adminSidebar">
+    <div class="sidebar-header">
+        <a href="http://localhost:8000/admin/index.php" class="sidebar-brand">
+            <div class="brand-icon"><i class="fas fa-store"></i></div>
+            <div class="brand-text">
+                <span class="brand-name">Mini-Ecommerce</span>
+                <span class="brand-role">Admin Panel</span>
+            </div>
+        </a>
+        <button class="sidebar-close" id="sidebarClose"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="sidebar-user">
+        <div class="d-flex align-items-center gap-3 px-3 py-3">
+                                    <div class="sidebar-avatar-initials">S</div>
+                        <div class="user-info">
+                <div class="user-name">Super Admin</div>
+                <div class="user-role">Super Admin</div>
+            </div>
+        </div>
+    </div>
+    <ul class="sidebar-nav">
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/index.php" class="nav-link active">
+                <i class="fas fa-tachometer-alt"></i> <span>Dashboard</span>
+            </a>
+        </li>
+        <li class="nav-divider"><span>Content</span></li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/cms/index.php" class="nav-link ">
+                <i class="fas fa-edit"></i> <span>CMS Pages</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/sliders/index.php" class="nav-link active">
+                <i class="fas fa-images"></i> <span>Hero Sliders</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/testimonials/index.php" class="nav-link ">
+                <i class="fas fa-quote-right"></i> <span>Testimonials</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/gallery/index.php" class="nav-link ">
+                <i class="fas fa-images"></i> <span>Gallery</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/partners/index.php" class="nav-link ">
+                <i class="fas fa-handshake"></i> <span>Partners</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/team/index.php" class="nav-link ">
+                <i class="fas fa-users"></i> <span>Team Members</span>
+            </a>
+        </li>
+        <li class="nav-divider"><span>Management</span></li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/contact/index.php" class="nav-link ">
+                <i class="fas fa-envelope"></i> <span>Contact Messages</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/products/index.php" class="nav-link ">
+                <i class="fas fa-box"></i> <span>Products</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/orders/index.php" class="nav-link ">
+                <i class="fas fa-shopping-cart"></i> <span>Orders</span>
+            </a>
+        </li>
+        <!-- <li class="nav-item">
+            <a href="http://localhost:8000/admin/projects/index.php" class="nav-link ">
+                <i class="fas fa-project-diagram"></i> <span>Projects</span>
+            </a>
+        </li> -->
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/careers/index.php" class="nav-link ">
+                <i class="fas fa-briefcase"></i> <span>Careers</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/admissions/index.php" class="nav-link ">
+                <i class="fas fa-graduation-cap"></i> <span>Admissions</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/users/index.php" class="nav-link ">
+                <i class="fas fa-user-shield"></i> <span>Users</span>
+            </a>
+        </li>
+        <li class="nav-divider"><span>Settings</span></li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/settings/index.php" class="nav-link ">
+                <i class="fas fa-cog"></i> <span>Website Settings</span>
+            </a>
+        </li>
+        <li class="nav-item">
+            <a href="http://localhost:8000/admin/reports/index.php" class="nav-link ">
+                <i class="fas fa-chart-bar"></i> <span>Reports</span>
+            </a>
+        </li>
+    </ul>
+    <div class="sidebar-footer">
+        <a href="http://localhost:8000/index.php" class="sidebar-footer-btn" style="background:rgba(255,255,255,.06);color:#94a3b8">
+            <i class="fas fa-external-link-alt"></i> View Site
+        </a>
+        <a href="http://localhost:8000/logout.php" class="sidebar-footer-btn" style="background:rgba(239,68,68,.1);color:#fca5a5">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+</nav>
+
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<style>
+.admin-sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: var(--sidebar-width);
+    background: var(--sidebar-bg);
+    color: var(--sidebar-text);
+    display: flex;
+    flex-direction: column;
+    z-index: 1040;
+    overflow-y: auto;
+    transition: transform 0.3s ease;
+}
+.sidebar-header {
+    padding: 1.25rem 1.25rem;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.sidebar-brand {
+    color: #fff;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.brand-icon {
+    width: 38px; height: 38px;
+    border-radius: 10px;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: #fff;
+}
+.brand-text { line-height: 1.2; }
+.brand-name { font-size: 1rem; font-weight: 700; display: block; }
+.brand-role { font-size: 0.7rem; color: var(--sidebar-text); font-weight: 400; }
+.sidebar-close {
+    display: none;
+    background: none;
+    border: none;
+    color: #94a3b8;
+    font-size: 1.1rem;
+    cursor: pointer;
+}
+.sidebar-user {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid rgba(255,255,255,.06);
+}
+.sidebar-avatar-initials {
+    width: 42px; height: 42px; border-radius: 50%;
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+.user-info { min-width: 0; }
+.user-name { color: #fff; font-size: 0.875rem; font-weight: 600; }
+.user-role { font-size: 0.7rem; color: var(--sidebar-text); }
+.sidebar-nav {
+    list-style: none;
+    padding: 0.5rem 0;
+    flex: 1;
+    margin: 0;
+}
+.sidebar-nav .nav-item { padding: 0; }
+.sidebar-nav .nav-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 1.25rem;
+    color: var(--sidebar-text);
+    text-decoration: none;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    margin: 0.1rem 0;
+}
+.sidebar-nav .nav-link:hover {
+    color: #fff;
+    background: rgba(255,255,255,.04);
+}
+.sidebar-nav .nav-link.active {
+    color: #fff;
+    background: rgba(99,102,241,.15);
+    border-left-color: var(--sidebar-active);
+}
+.sidebar-nav .nav-link i {
+    width: 1.25rem;
+    text-align: center;
+    font-size: 0.9rem;
+    flex-shrink: 0;
+}
+.nav-divider {
+    padding: 0.75rem 1.25rem 0.25rem;
+    font-size: 0.65rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: rgba(255,255,255,.2);
+}
+.sidebar-footer {
+    padding: 1rem 1.25rem;
+    border-top: 1px solid rgba(255,255,255,.06);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+.sidebar-footer-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.2s;
+}
+.sidebar-footer-btn:hover {
+    transform: translateY(-1px);
+}
+.sidebar-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.5);
+    z-index: 1030;
+}
+@media (max-width: 991.98px) {
+    .admin-sidebar {
+        transform: translateX(-100%);
+    }
+    .admin-sidebar.open {
+        transform: translateX(0);
+    }
+    .sidebar-close { display: block; }
+    .sidebar-overlay.show { display: block; }
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const sidebar = document.getElementById('adminSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    const toggle = document.getElementById('sidebarToggle');
+    const close = document.getElementById('sidebarClose');
+
+    function openSidebar() {
+        if (sidebar) sidebar.classList.add('open');
+        if (overlay) overlay.classList.add('show');
+    }
+    function closeSidebar() {
+        if (sidebar) sidebar.classList.remove('open');
+        if (overlay) overlay.classList.remove('show');
+    }
+
+    if (toggle) toggle.addEventListener('click', openSidebar);
+    if (close) close.addEventListener('click', closeSidebar);
+    if (overlay) overlay.addEventListener('click', closeSidebar);
+});
+</script>
+<div class="container-fluid px-0">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="page-title mb-0">Hero Sliders</h1>
+        <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#slideModal">
+            <i class="fas fa-plus"></i> Add Slide
+        </button>
+    </div>
+
+    <div class="alert alert-error alert-dismissible fade show" role="alert"><i class="fas fa-exclamation-circle"></i> Image is required.<button type="button" class="btn-close" data-bs-dismiss="alert"></button></div>
+    <div class="card">
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover" id="slidersTable">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Sort Order</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                                                <tr>
+                            <td>1</td>
+                            <td>
+                                                                <img src="http://localhost:8000/uploads/sliders/1782820493_bf25e0fdc008dbc3.jpg" class="img-thumb" alt="Slide">
+                                                            </td>
+                            <td>Mini eCommerce Store</td>
+                            <td>0</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-primary edit-slide" data-id="1" data-title="Mini eCommerce Store" data-subtitle="Shop Smarter, Save More" data-description="Explore a wide range of quality products at affordable prices. From electronics and fashion to home essentials, enjoy secure shopping, fast delivery, and great deals every day." data-button_text="" data-button_url="" data-sort_order="0" data-is_active="1" data-image="uploads/sliders/1782820493_bf25e0fdc008dbc3.jpg">
+                                    <i class="fas fa-edit"></i>
+                                </button>
+                                <button class="btn btn-sm btn-danger delete-slide" data-id="1">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                                            </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="slideModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <form method="post" enctype="multipart/form-data">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="slideModalLabel">Add Slide</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <input type="hidden" name="slide_id" id="slide_id" value="0">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Title</label>
+                            <input type="text" name="title" id="slide_title" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Subtitle</label>
+                            <input type="text" name="subtitle" id="slide_subtitle" class="form-control">
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Description</label>
+                        <textarea name="description" id="slide_description" class="form-control" rows="3"></textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Button Text</label>
+                            <input type="text" name="button_text" id="slide_button_text" class="form-control">
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Button URL</label>
+                            <input type="text" name="button_url" id="slide_button_url" class="form-control">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Image</label>
+                            <input type="file" name="image" class="form-control" accept="image/*" id="slide_image_input">
+                            <div id="slide_image_preview" class="mt-2"></div>
+                            <small class="text-muted">Recommended: 1920x800px</small>
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">Sort Order</label>
+                            <input type="number" name="sort_order" id="slide_sort_order" class="form-control" value="0">
+                        </div>
+                        <div class="col-md-3 mb-3">
+                            <label class="form-label">&nbsp;</label>
+                            <div class="form-check form-switch mt-2">
+                                <input type="checkbox" name="is_active" class="form-check-input" id="slide_is_active" checked>
+                                <label class="form-check-label" for="slide_is_active">Active</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" name="save_slide" class="btn btn-primary"><i class="fas fa-save"></i> Save Slide</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<form method="post" id="deleteForm">
+    <input type="hidden" name="slide_id" id="delete_id">
+    <input type="hidden" name="delete_slide">
+</form>
+
+</div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="http://localhost:8000/assets/admin/js/admin.js"></script>
+<script>
+$(document).ready(function() {
+    $('#slidersTable').DataTable({
+        order: [[3, 'asc']],
+        pageLength: 25
+    });
+
+    $('.edit-slide').click(function() {
+        const d = $(this).data();
+        $('#slideModalLabel').text('Edit Slide');
+        $('#slide_id').val(d.id);
+        $('#slide_title').val(d.title);
+        $('#slide_subtitle').val(d.subtitle);
+        $('#slide_description').val(d.description);
+        $('#slide_button_text').val(d.button_text);
+        $('#slide_button_url').val(d.button_url);
+        $('#slide_sort_order').val(d.sort_order);
+        $('#slide_is_active').prop('checked', d.is_active == 1);
+        if (d.image) {
+            $('#slide_image_preview').html('<img src="' + APP_URL + '/' + d.image + '" class="preview-img" style="max-height:80px"><small class="text-muted d-block">Leave empty to keep current</small>');
+        } else {
+            $('#slide_image_preview').empty();
+        }
+        $('#slideModal').modal('show');
+    });
+
+    $('#slideModal').on('hidden.bs.modal', function() {
+        if ($('#slide_id').val() == 0) {
+            $(this).find('form')[0].reset();
+            $('#slide_image_preview').empty();
+            $('#slideModalLabel').text('Add Slide');
+        }
+    });
+
+    $('.delete-slide').click(function() {
+        const id = $(this).data('id');
+        Swal.fire({
+            title: 'Delete Slide?',
+            text: 'This action cannot be undone!',
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#ef4444',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel'
+        }).then(result => {
+            if (result.isConfirmed) {
+                $('#delete_id').val(id);
+                $('#deleteForm').submit();
+            }
+        });
+    });
+});
+</script></body>
+</html>

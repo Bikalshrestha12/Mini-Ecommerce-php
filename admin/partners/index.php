@@ -195,7 +195,7 @@ $(document).ready(function() {
         pageLength: 25
     });
 
-    $('.edit-partner').click(function() {
+    $(document).on('click', '.edit-partner', function() {
         const d = $(this).data();
         $('#partnerModalLabel').text('Edit Partner');
         $('#partner_id').val(d.id);
@@ -219,7 +219,7 @@ $(document).ready(function() {
         }
     });
 
-    $('.delete-partner').click(function() {
+    $(document).on('click', '.delete-partner', function() {
         const id = $(this).data('id');
         Swal.fire({
             title: 'Delete Partner?',

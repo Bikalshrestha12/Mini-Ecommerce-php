@@ -186,7 +186,7 @@ $(document).ready(function() {
         pageLength: 25
     });
 
-    $('.view-message').click(function() {
+    $(document).on('click', '.view-message', function() {
         const d = $(this).data();
         $('#view_name').text(d.name);
         $('#view_email').html('<a href="mailto:' + d.email + '">' + d.email + '</a>');
@@ -215,7 +215,7 @@ $(document).ready(function() {
         $('#viewMessageModal').modal('show');
     });
 
-    $('.delete-message').click(function() {
+    $(document).on('click', '.delete-message', function() {
         const id = $(this).data('id');
         Swal.fire({
             title: 'Delete Message?',

@@ -197,7 +197,7 @@ $(document).ready(function() {
         pageLength: 25
     });
 
-    $('.edit-slide').click(function() {
+    $(document).on('click', '.edit-slide', function() {
         const d = $(this).data();
         $('#slideModalLabel').text('Edit Slide');
         $('#slide_id').val(d.id);
@@ -224,7 +224,7 @@ $(document).ready(function() {
         }
     });
 
-    $('.delete-slide').click(function() {
+    $(document).on('click', '.delete-slide', function() {
         const id = $(this).data('id');
         Swal.fire({
             title: 'Delete Slide?',

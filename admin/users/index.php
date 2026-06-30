@@ -300,7 +300,7 @@ include_once __DIR__ . '/../../admin/partials/admin_sidebar.php';
 <script>
 $(document).ready(function() {
     // --- Edit User ---
-    $('.edit-user').click(function() {
+    $(document).on('click', '.edit-user', function() {
         var user = $(this).data('user');
         $('#edit_user_id').val(user.user_id);
         $('#edit_name').val(user.name);
@@ -313,7 +313,7 @@ $(document).ready(function() {
     });
 
     // --- Delete User ---
-    $('.delete-user').click(function() {
+    $(document).on('click', '.delete-user', function() {
         var id = $(this).data('id');
         var name = $(this).data('name');
         Swal.fire({
@@ -338,7 +338,7 @@ $(document).ready(function() {
     });
 
     // --- Toggle Status ---
-    $('.toggle-status').click(function() {
+    $(document).on('click', '.toggle-status', function() {
         var btn = $(this);
         var id = btn.data('id');
         $.post('', { action: 'toggle_status', user_id: id }, function(res) {
@@ -358,7 +358,7 @@ $(document).ready(function() {
     });
 
     // --- Reset Password ---
-    $('.reset-pw').click(function() {
+    $(document).on('click', '.reset-pw', function() {
         var id = $(this).data('id');
         var name = $(this).data('name');
         Swal.fire({

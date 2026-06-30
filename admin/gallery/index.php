@@ -190,7 +190,7 @@ $(document).ready(function() {
         pageLength: 25
     });
 
-    $('.edit-gallery').click(function() {
+    $(document).on('click', '.edit-gallery', function() {
         const d = $(this).data();
         $('#galleryModalLabel').text('Edit Image');
         $('#gallery_id').val(d.id);
@@ -215,7 +215,7 @@ $(document).ready(function() {
         }
     });
 
-    $('.delete-gallery').click(function() {
+    $(document).on('click', '.delete-gallery', function() {
         const id = $(this).data('id');
         Swal.fire({
             title: 'Delete Image?',

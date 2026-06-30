@@ -18,8 +18,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
         if (array_key_exists($key, $files)) continue;
 
         $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value, setting_group) VALUES (?, ?, ?)
-            ON DUPLICATE KEY UPDATE setting_value = ?, setting_group = ?");
-        $stmt->execute([$key, $value, $group, $value, $group]);
+            ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, setting_group = excluded.setting_group");
+        $stmt->execute([$key, $value, $group]);
     }
 
     foreach ($files as $fileKey => $group) {
@@ -28,8 +28,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_settings'])) {
             $uploaded = uploadFile($_FILES[$fileKey], $subdir, ['jpg','jpeg','png','webp','gif','ico']);
             if ($uploaded) {
                 $stmt = $pdo->prepare("INSERT INTO settings (setting_key, setting_value, setting_group) VALUES (?, ?, ?)
-                    ON DUPLICATE KEY UPDATE setting_value = ?, setting_group = ?");
-                $stmt->execute([$fileKey, $uploaded, $group, $uploaded, $group]);
+                    ON CONFLICT(setting_key) DO UPDATE SET setting_value = excluded.setting_value, setting_group = excluded.setting_group");
+                $stmt->execute([$fileKey, $uploaded, $group]);
             }
         }
     }
@@ -61,7 +61,7 @@ $groupIcons = [
     'contact' => 'fa-address-card',
     'social'  => 'fa-share-alt',
     'seo'     => 'fa-search',
-    'footer'  => 'fa-shoe-prints',
+    'footer'  => 'fa-print',
 ];
 
 $pageTitle = 'Website Settings';
